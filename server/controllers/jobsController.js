@@ -48,3 +48,61 @@ export async function addJob(req, res) {
     res.status(500).json({ error: "Failed to add job", details: err.message });
   }
 }
+
+export async function updateJob(req, res) {
+  let { companyName, jobTitle, statusID, applicationDate, notes } = req.body;
+  const jobID = parseInt(req.params.id, 10);
+
+  if (isNaN(jobID)) {
+    return res.status(400).json({ error: "Invalid job ID" });
+  }
+
+  companyName = companyName?.trim();
+  jobTitle = jobTitle?.trim();
+  notes = notes?.trim();
+
+  if (!companyName || !jobTitle || !statusID || !applicationDate) {
+    return res.status(400).json({
+      error: "Missing required fields: companyName, jobTitle, statusID, applicationDate",
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `UPDATE jobs
+      SET company_name = $1, job_title = $2, status_id = $3, application_date = $4, notes = $5
+      WHERE id = $6
+      RETURNING *`,
+      [companyName, jobTitle, statusID, applicationDate, notes, jobID]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    res.status(200).json(result.rows[0]);
+  } catch (err) {
+    console.error("Error updating job:", err.message);
+    res.status(500).json({ error: "Failed to update job", details: err.message });
+  }
+}
+
+export async function deleteJob(req, res) {
+  const jobID = parseInt(req.params.id, 10);
+
+  if (isNaN(jobID)) {
+    return res.status(400).json({ error: "Invalid job ID" });
+  }
+  try {
+    const result = await pool.query("DELETE FROM jobs WHERE id = $1", [jobID]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ error: "Job not found" });
+    }
+
+    res.status(204).send();
+  } catch (err) {
+    console.error("Error deleting job:", err.message);
+    res.status(500).json({ error: "Failed to delete job", details: err.message });
+  }
+}
