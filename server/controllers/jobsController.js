@@ -2,19 +2,28 @@ import pool from "../db.js";
 
 export async function getJobs(req, res) {
   try {
-    const result = await pool.query(
-      `SELECT
-            jobs.id,
-            jobs.company_name,
-            jobs.job_title,
-            jobs.status_id,
-            statuses.name as status,
-            jobs.application_date,
-            jobs.notes,
-            jobs.created_at
-        FROM jobs JOIN statuses ON jobs.status_id = statuses.id
-        ORDER BY jobs.application_date DESC`
-    );
+    let query = `SELECT
+                  jobs.id,
+                  jobs.company_name,
+                  jobs.job_title,
+                  jobs.status_id,
+                  statuses.name as status,
+                  jobs.application_date,
+                  jobs.notes,
+                  jobs.created_at
+                FROM jobs JOIN statuses ON jobs.status_id = statuses.id`;
+    let params = [];
+
+    const { status } = req.query;
+
+    if (status) {
+      query += " WHERE jobs.status_id = $1";
+      params.push(status);
+    }
+
+    query += " ORDER BY jobs.application_date DESC";
+
+    const result = await pool.query(query, params);
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching jobs:", err);
