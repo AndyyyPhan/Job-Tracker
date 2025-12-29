@@ -27,7 +27,9 @@ export async function getJobs(req, res) {
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching jobs:", err);
-    res.status(500).json({ error: "Failed to fetch jobs", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to fetch jobs", details: err.message });
   }
 }
 
@@ -40,16 +42,34 @@ export async function addJob(req, res) {
 
   if (!companyName || !jobTitle || !statusID || !applicationDate) {
     return res.status(400).json({
-      error: "Missing required fields: companyName, jobTitle, statusID, applicationDate",
+      error:
+        "Missing required fields: companyName, jobTitle, statusID, applicationDate",
     });
   }
 
   try {
-    const result = await pool.query(
+    const insertResult = await pool.query(
       `INSERT INTO jobs (company_name, job_title, status_id, application_date, notes)
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *`,
       [companyName, jobTitle, statusID, applicationDate, notes]
+    );
+
+    const newJobID = insertResult.rows[0].id;
+
+    const result = await pool.query(
+      `SELECT
+        jobs.id,
+        jobs.company_name,
+        jobs.job_title,
+        jobs.status_id,
+        statuses.name as status,
+        jobs.application_date,
+        jobs.notes,
+        jobs.created_at
+      FROM jobs JOIN statuses ON jobs.status_id = statuses.id
+      WHERE jobs.id = $1`,
+      [newJobID]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -72,7 +92,8 @@ export async function updateJob(req, res) {
 
   if (!companyName || !jobTitle || !statusID || !applicationDate) {
     return res.status(400).json({
-      error: "Missing required fields: companyName, jobTitle, statusID, applicationDate",
+      error:
+        "Missing required fields: companyName, jobTitle, statusID, applicationDate",
     });
   }
 
@@ -92,7 +113,9 @@ export async function updateJob(req, res) {
     res.status(200).json(result.rows[0]);
   } catch (err) {
     console.error("Error updating job:", err.message);
-    res.status(500).json({ error: "Failed to update job", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to update job", details: err.message });
   }
 }
 
@@ -112,6 +135,8 @@ export async function deleteJob(req, res) {
     res.status(204).send();
   } catch (err) {
     console.error("Error deleting job:", err.message);
-    res.status(500).json({ error: "Failed to delete job", details: err.message });
+    res
+      .status(500)
+      .json({ error: "Failed to delete job", details: err.message });
   }
 }
