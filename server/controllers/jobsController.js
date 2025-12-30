@@ -2,6 +2,8 @@ import pool from "../db.js";
 
 export async function getJobs(req, res) {
   try {
+    const userId = req.session.userId;
+
     let query = `SELECT
                   jobs.id,
                   jobs.company_name,
@@ -11,13 +13,14 @@ export async function getJobs(req, res) {
                   jobs.application_date,
                   jobs.notes,
                   jobs.created_at
-                FROM jobs JOIN statuses ON jobs.status_id = statuses.id`;
-    let params = [];
+                FROM jobs JOIN statuses ON jobs.status_id = statuses.id
+                WHERE jobs.user_id = $1`;
+    let params = [userId];
 
     const { status } = req.query;
 
     if (status) {
-      query += " WHERE jobs.status_id = $1";
+      query += " AND jobs.status_id = $2";
       params.push(status);
     }
 
@@ -32,6 +35,8 @@ export async function getJobs(req, res) {
 }
 
 export async function addJob(req, res) {
+  const userId = req.session.userId;
+
   let { companyName, jobTitle, statusID, applicationDate, notes } = req.body;
 
   companyName = companyName?.trim();
@@ -46,10 +51,10 @@ export async function addJob(req, res) {
 
   try {
     const insertResult = await pool.query(
-      `INSERT INTO jobs (company_name, job_title, status_id, application_date, notes)
-      VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO jobs (company_name, job_title, status_id, application_date, notes, user_id)
+      VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *`,
-      [companyName, jobTitle, statusID, applicationDate, notes]
+      [companyName, jobTitle, statusID, applicationDate, notes, userId]
     );
 
     const newJobID = insertResult.rows[0].id;
