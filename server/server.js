@@ -3,6 +3,7 @@ import cors from "cors";
 import { jobsRouter } from "./routes/jobs.js";
 import { authRouter } from "./routes/auth.js";
 import { meRouter } from "./routes/me.js";
+import { statusesRouter } from "./routes/statuses.js";
 import session from "express-session";
 import "dotenv/config";
 
@@ -33,6 +34,7 @@ app.use(
 app.use("/api/jobs", jobsRouter);
 app.use("/api/auth/me", meRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/statuses", statusesRouter);
 
 app
   .listen(PORT, () => {
