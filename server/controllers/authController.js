@@ -14,8 +14,7 @@ export async function registerUser(req, res) {
 
   if (!/^[a-zA-Z0-9_-]{1,20}$/.test(username)) {
     return res.status(400).json({
-      error:
-        "Username must be 1–20 characters, using letters, numbers, _ or -.",
+      error: "Username must be 1–20 characters, using letters, numbers, _ or -.",
     });
   }
 
@@ -23,11 +22,7 @@ export async function registerUser(req, res) {
     return res.status(400).json({ error: "Invalid email format." });
   }
 
-  if (
-    !/[A-Z]/.test(password) ||
-    !/[a-z]/.test(password) ||
-    !/[0-9]/.test(password)
-  ) {
+  if (!/[A-Z]/.test(password) || !/[a-z]/.test(password) || !/[0-9]/.test(password)) {
     return res.status(400).json({
       error: "Password must contain uppercase, lowercase, and number.",
     });
@@ -42,9 +37,7 @@ export async function registerUser(req, res) {
     const existingUser = existingUserResult.rows[0];
 
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ error: "Username or email already in use." });
+      return res.status(400).json({ error: "Username or email already in use." });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -76,10 +69,7 @@ export async function loginUser(req, res) {
     );
     const existingUser = existingUserResult.rows[0];
 
-    if (
-      !existingUser ||
-      !(await bcrypt.compare(password, existingUser.password))
-    ) {
+    if (!existingUser || !(await bcrypt.compare(password, existingUser.password))) {
       return res.status(401).json({ error: "Invalid credentials." });
     }
 
@@ -89,4 +79,8 @@ export async function loginUser(req, res) {
     console.error("Login error:", err.message);
     res.status(500).json({ error: "Login failed. Please try again." });
   }
+}
+
+export async function logoutUser(req, res) {
+  req.session.destroy(() => res.json({ message: "Logged out." }));
 }
