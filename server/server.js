@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import { jobsRouter } from "./routes/jobs.js";
 import { authRouter } from "./routes/auth.js";
+import { meRouter } from "./routes/me.js";
 import session from "express-session";
 import "dotenv/config";
 
@@ -25,6 +26,7 @@ app.use(
 app.use(cors());
 
 app.use("/api/jobs", jobsRouter);
+app.use("/api/auth/me", meRouter);
 app.use("/api/auth", authRouter);
 
 app
