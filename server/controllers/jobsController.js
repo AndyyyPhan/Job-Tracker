@@ -27,9 +27,7 @@ export async function getJobs(req, res) {
     res.json(result.rows);
   } catch (err) {
     console.error("Error fetching jobs:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to fetch jobs", details: err.message });
+    res.status(500).json({ error: "Failed to fetch jobs", details: err.message });
   }
 }
 
@@ -42,8 +40,7 @@ export async function addJob(req, res) {
 
   if (!companyName || !jobTitle || !statusID || !applicationDate) {
     return res.status(400).json({
-      error:
-        "Missing required fields: companyName, jobTitle, statusID, applicationDate",
+      error: "Missing required fields: companyName, jobTitle, statusID, applicationDate",
     });
   }
 
@@ -92,8 +89,7 @@ export async function updateJob(req, res) {
 
   if (!companyName || !jobTitle || !statusID || !applicationDate) {
     return res.status(400).json({
-      error:
-        "Missing required fields: companyName, jobTitle, statusID, applicationDate",
+      error: "Missing required fields: companyName, jobTitle, statusID, applicationDate",
     });
   }
 
@@ -113,9 +109,7 @@ export async function updateJob(req, res) {
     res.status(200).json(result.rows[0]);
   } catch (err) {
     console.error("Error updating job:", err.message);
-    res
-      .status(500)
-      .json({ error: "Failed to update job", details: err.message });
+    res.status(500).json({ error: "Failed to update job", details: err.message });
   }
 }
 
@@ -135,8 +129,6 @@ export async function deleteJob(req, res) {
     res.status(204).send();
   } catch (err) {
     console.error("Error deleting job:", err.message);
-    res
-      .status(500)
-      .json({ error: "Failed to delete job", details: err.message });
+    res.status(500).json({ error: "Failed to delete job", details: err.message });
   }
 }
