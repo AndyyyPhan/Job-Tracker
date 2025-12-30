@@ -57,7 +57,7 @@ export async function addJob(req, res) {
       [companyName, jobTitle, statusID, applicationDate, notes, userId]
     );
 
-    const newJobID = insertResult.rows[0].id;
+    const newJobId = insertResult.rows[0].id;
 
     const result = await pool.query(
       `SELECT
@@ -71,7 +71,7 @@ export async function addJob(req, res) {
         jobs.created_at
       FROM jobs JOIN statuses ON jobs.status_id = statuses.id
       WHERE jobs.id = $1`,
-      [newJobID]
+      [newJobId]
     );
     res.status(201).json(result.rows[0]);
   } catch (err) {
@@ -81,10 +81,11 @@ export async function addJob(req, res) {
 }
 
 export async function updateJob(req, res) {
+  const userId = req.session.userId;
   let { companyName, jobTitle, statusID, applicationDate, notes } = req.body;
-  const jobID = parseInt(req.params.id, 10);
+  const jobId = parseInt(req.params.id, 10);
 
-  if (isNaN(jobID)) {
+  if (isNaN(jobId)) {
     return res.status(400).json({ error: "Invalid job ID" });
   }
 
@@ -99,17 +100,33 @@ export async function updateJob(req, res) {
   }
 
   try {
-    const result = await pool.query(
+    const updateResult = await pool.query(
       `UPDATE jobs
       SET company_name = $1, job_title = $2, status_id = $3, application_date = $4, notes = $5
-      WHERE id = $6
+      WHERE id = $6 AND user_id = $7
       RETURNING *`,
-      [companyName, jobTitle, statusID, applicationDate, notes, jobID]
+      [companyName, jobTitle, statusID, applicationDate, notes, jobId, userId]
     );
 
-    if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Job not found" });
+    if (updateResult.rows.length === 0) {
+      return res.status(404).json({ error: "Job not found or you don't have permission" });
     }
+
+    const result = await pool.query(
+      `
+      SELECT
+        jobs.id,
+        jobs.company_name,
+        jobs.job_title,
+        jobs.status_id,
+        statuses.name as status,
+        jobs.application_date,
+        jobs.notes,
+      FROM jobs
+      JOIN statuses ON jobs.status_id = statuses.id
+      WHERE jobs.id = $1 AND jobs.user_id = $2`,
+      [jobId, userId]
+    );
 
     res.status(200).json(result.rows[0]);
   } catch (err) {
@@ -119,13 +136,17 @@ export async function updateJob(req, res) {
 }
 
 export async function deleteJob(req, res) {
-  const jobID = parseInt(req.params.id, 10);
+  const userId = req.session.userId;
+  const jobId = parseInt(req.params.id, 10);
 
-  if (isNaN(jobID)) {
+  if (isNaN(jobId)) {
     return res.status(400).json({ error: "Invalid job ID" });
   }
   try {
-    const result = await pool.query("DELETE FROM jobs WHERE id = $1", [jobID]);
+    const result = await pool.query("DELETE FROM jobs WHERE id = $1 AND user_id = $2", [
+      jobId,
+      userId,
+    ]);
 
     if (result.rowCount === 0) {
       return res.status(404).json({ error: "Job not found" });
