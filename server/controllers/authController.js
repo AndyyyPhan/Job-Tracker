@@ -60,3 +60,33 @@ export async function registerUser(req, res) {
     res.status(500).json({ error: "Registration failed. Please try again." });
   }
 }
+
+export async function loginUser(req, res) {
+  let { username, password } = req.body;
+  username = username.trim();
+
+  if (!username || !password) {
+    return res.status(400).json({ error: "All fields are required." });
+  }
+
+  try {
+    const existingUserResult = await pool.query(
+      `SELECT id, password FROM users WHERE username = $1`,
+      [username]
+    );
+    const existingUser = existingUserResult.rows[0];
+
+    if (
+      !existingUser ||
+      !(await bcrypt.compare(password, existingUser.password))
+    ) {
+      return res.status(401).json({ error: "Invalid credentials." });
+    }
+
+    req.session.userId = existingUser.id;
+    res.json({ message: "Logged in" });
+  } catch (err) {
+    console.error("Login error:", err.message);
+    res.status(500).json({ error: "Login failed. Please try again." });
+  }
+}
