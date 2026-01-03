@@ -17,6 +17,7 @@ export default function JobForm({ onJobAdded }) {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           companyName,
           jobTitle,
@@ -118,7 +119,7 @@ export default function JobForm({ onJobAdded }) {
         </label>
         <textarea
           id="notes"
-          values={notes}
+          value={notes}
           onChange={(e) => setNotes(e.target.value)}
           rows="3"
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent resize-vertical"
