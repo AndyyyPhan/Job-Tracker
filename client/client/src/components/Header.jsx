@@ -1,9 +1,19 @@
-export default function Header() {
+export default function Header({ user }) {
   return (
-    <header className="header">
-      <div className="header-content">
-        <h1>Job Tracker</h1>
-        <p className="header-subtitle">Manage your job applications</p>
+    <header className="bg-gradient-to-r from-blue-300 to-blue-600 text-white p-8 shadow-lg">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-bold mb-2">Job Tracker</h1>
+            <p className="text-lg opacity-90">Manage your job applications</p>
+          </div>
+          {user && (
+            <div className="text-right">
+              <p className="text-sm opacity-75">Logged in as</p>
+              <p className="text-xl font-semibold">{user.username}</p>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );
