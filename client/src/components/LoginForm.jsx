@@ -21,6 +21,8 @@ export default function LoginForm({ onLoginSuccess, onSwitchToSignup }) {
 
       const data = await response.json();
 
+      console.log(data);
+
       if (!response.ok) {
         setError(data.error || "Login failed");
         setIsLoading(false);
@@ -30,6 +32,8 @@ export default function LoginForm({ onLoginSuccess, onSwitchToSignup }) {
       onLoginSuccess(data.user);
     } catch (err) {
       setError("Network error. Please try again.");
+      setIsLoading(false);
+    } finally {
       setIsLoading(false);
     }
   };

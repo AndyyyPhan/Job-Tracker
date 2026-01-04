@@ -78,7 +78,7 @@ export async function loginUser(req, res) {
     }
 
     req.session.userId = existingUser.id;
-    res.json({ message: "Logged in" });
+    res.json({ message: "Logged in", user: existingUser });
   } catch (err) {
     console.error("Login error:", err.message);
     res.status(500).json({ error: "Login failed. Please try again." });
