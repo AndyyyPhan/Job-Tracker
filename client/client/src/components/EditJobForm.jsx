@@ -98,8 +98,8 @@ export default function EditJobForm({ job, onJobUpdated, onCancel }) {
         >
           <option value="1">Applied</option>
           <option value="2">Interviewing</option>
-          <option value="3">Offer</option>
-          <option value="4">Rejected</option>
+          <option value="3">Rejected</option>
+          <option value="4">Offer</option>
           <option value="5">Accepted</option>
         </select>
       </div>
