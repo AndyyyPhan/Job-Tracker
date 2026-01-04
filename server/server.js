@@ -8,25 +8,24 @@ import session from "express-session";
 import "dotenv/config";
 
 const app = express();
-const PORT = 8000;
-const secret = process.env.SESSION_SECRET;
+const PORT = process.env.PORT || 8000;
 
 app.use(express.json());
 app.use(
   session({
-    secret: secret,
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {
       httpOnly: true,
-      secure: false,
+      secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
     },
   })
 );
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: process.env.CLIENT_URL,
     credentials: true,
   })
 );
@@ -36,10 +35,12 @@ app.use("/api/auth/me", meRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/statuses", statusesRouter);
 
-app
-  .listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-  })
-  .on("error", (err) => {
-    console.error("Failed to start server:", err);
-  });
+if (process.env.VERCEL !== "1") {
+  app
+    .listen(PORT, () => {
+      console.log(`Server running at http://localhost:${PORT}`);
+    })
+    .on("error", (err) => {
+      console.error("Failed to start server:", err);
+    });
+}
