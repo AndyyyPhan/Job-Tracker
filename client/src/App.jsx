@@ -30,7 +30,7 @@ function App() {
 
   const checkAuth = async () => {
     try {
-      const response = await fetch("http://localhost:8000/api/auth/me", {
+      const response = await fetch("/api/auth/me", {
         credentials: "include",
       });
 
@@ -47,7 +47,7 @@ function App() {
 
   const fetchJobs = async (statusFilter = selectedStatus) => {
     try {
-      let url = "http://localhost:8000/api/jobs";
+      let url = "/api/jobs";
       if (statusFilter && statusFilter !== "all") {
         url += `?status=${statusFilter}`;
       }
@@ -74,7 +74,7 @@ function App() {
 
   const handleLogout = async () => {
     try {
-      await fetch("http://localhost:8000/api/auth/logout", {
+      await fetch("/api/auth/logout", {
         method: "POST",
         credentials: "include",
       });
@@ -108,7 +108,7 @@ function App() {
 
   const handleDelete = async (job) => {
     try {
-      const response = await fetch(`http://localhost:8000/api/jobs/${job.id}`, {
+      const response = await fetch(`/api/jobs/${job.id}`, {
         method: "DELETE",
         credentials: "include",
       });

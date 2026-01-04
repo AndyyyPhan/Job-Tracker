@@ -21,7 +21,7 @@ export default function EditJobForm({ job, onJobUpdated, onCancel }) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(`http://localhost:8000/api/jobs/${job.id}`, {
+      const response = await fetch(`/api/jobs/${job.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
