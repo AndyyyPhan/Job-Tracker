@@ -35,6 +35,8 @@ app.use("/api/auth/me", meRouter);
 app.use("/api/auth", authRouter);
 app.use("/api/statuses", statusesRouter);
 
+app.get("/", (req, res) => res.status(200).send("OK"));
+
 if (process.env.VERCEL !== "1") {
   app
     .listen(PORT, () => {
@@ -44,3 +46,5 @@ if (process.env.VERCEL !== "1") {
       console.error("Failed to start server:", err);
     });
 }
+
+export default app;
