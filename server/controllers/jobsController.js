@@ -121,7 +121,7 @@ export async function updateJob(req, res) {
         jobs.status_id,
         statuses.name as status,
         jobs.application_date,
-        jobs.notes,
+        jobs.notes
       FROM jobs
       JOIN statuses ON jobs.status_id = statuses.id
       WHERE jobs.id = $1 AND jobs.user_id = $2`,
