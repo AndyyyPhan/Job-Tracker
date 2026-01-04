@@ -6,12 +6,14 @@ import LoginForm from "./components/LoginForm.jsx";
 import SignupForm from "./components/SignupForm.jsx";
 import Modal from "./components/Modal.jsx";
 import EditJobForm from "./components/EditJobForm.jsx";
+import StatusFilter from "./components/StatusFilter.jsx";
 
 function App() {
   const [user, setUser] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [showSignup, setShowSignup] = React.useState(false);
   const [jobs, setJobs] = React.useState([]);
+  const [selectedStatus, setSelectedStatus] = React.useState("all");
 
   const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
   const [jobToEdit, setJobToEdit] = React.useState(null);
@@ -43,9 +45,13 @@ function App() {
     }
   };
 
-  const fetchJobs = async () => {
+  const fetchJobs = async (statusFilter = selectedStatus) => {
     try {
-      const response = await fetch("http://localhost:8000/api/jobs", {
+      let url = "http://localhost:8000/api/jobs";
+      if (statusFilter && statusFilter !== "all") {
+        url += `?status=${statusFilter}`;
+      }
+      const response = await fetch(url, {
         credentials: "include",
       });
 
@@ -118,6 +124,11 @@ function App() {
     }
   };
 
+  const handleStatusChange = (status) => {
+    setSelectedStatus(status);
+    fetchJobs(status);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -150,6 +161,7 @@ function App() {
         </div>
 
         <div className="flex-1">
+          <StatusFilter selectedStatus={selectedStatus} onStatusChange={handleStatusChange} />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {jobs.length === 0 ? (
               <p className="text-gray-500 col-span-full text-center p-8">
