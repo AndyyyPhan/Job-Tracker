@@ -68,7 +68,7 @@ export async function loginUser(req, res) {
 
   try {
     const existingUserResult = await pool.query(
-      `SELECT id, password FROM users WHERE username = $1`,
+      `SELECT id, username, password FROM users WHERE username = $1`,
       [username]
     );
     const existingUser = existingUserResult.rows[0];
