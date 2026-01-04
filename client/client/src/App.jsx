@@ -1,15 +1,20 @@
+import React from "react";
 import Header from "./components/Header.jsx";
 import JobCard from "./components/JobCard.jsx";
 import JobForm from "./components/JobForm.jsx";
 import LoginForm from "./components/LoginForm.jsx";
 import SignupForm from "./components/SignupForm.jsx";
-import React from "react";
+import Modal from "./components/Modal.jsx";
+import EditJobForm from "./components/EditJobForm.jsx";
 
 function App() {
   const [user, setUser] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
   const [showSignup, setShowSignup] = React.useState(false);
   const [jobs, setJobs] = React.useState([]);
+
+  const [isEditModalOpen, setIsEditModalOpen] = React.useState(false);
+  const [jobToEdit, setJobToEdit] = React.useState(null);
 
   React.useEffect(() => {
     checkAuth();
@@ -75,7 +80,42 @@ function App() {
   };
 
   const handleJobAdded = (newJob) => {
-    setJobs([newJob, ...jobs]);
+    // setJobs([newJob, ...jobs]);
+    fetchJobs();
+  };
+
+  const handleEdit = (job) => {
+    setJobToEdit(job);
+    setIsEditModalOpen(true);
+  };
+
+  const handleJobUpdated = () => {
+    fetchJobs();
+    setJobToEdit(null);
+    setIsEditModalOpen(false);
+  };
+
+  const handleCancelEdit = () => {
+    setJobToEdit(null);
+    setIsEditModalOpen(false);
+  };
+
+  const handleDelete = async (job) => {
+    try {
+      const response = await fetch(`http://localhost:8000/api/jobs/${job.id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete job.");
+      }
+
+      fetchJobs();
+    } catch (err) {
+      console.error("Error deleting job:", err);
+      alert("Failed to delete job. Please try again.");
+    }
   };
 
   if (isLoading) {
@@ -116,11 +156,23 @@ function App() {
                 No jobs yet. Add your first job above!
               </p>
             ) : (
-              jobs.map((job) => <JobCard key={job.id} job={job} />)
+              jobs.map((job) => (
+                <JobCard key={job.id} job={job} onEdit={handleEdit} onDelete={handleDelete} />
+              ))
             )}
           </div>
         </div>
       </div>
+
+      <Modal isOpen={isEditModalOpen} onClose={handleCancelEdit}>
+        {jobToEdit && (
+          <EditJobForm
+            job={jobToEdit}
+            onJobUpdated={handleJobUpdated}
+            onCancel={handleCancelEdit}
+          />
+        )}
+      </Modal>
     </main>
   );
 }
