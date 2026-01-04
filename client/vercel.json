@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://job-tracker-server-beige.vercel.app/api/:path*"
+    }
+  ]
+}
