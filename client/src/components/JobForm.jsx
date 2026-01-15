@@ -49,11 +49,17 @@ export default function JobForm({ onJobAdded }) {
   };
 
   return (
-    <form className="bg-white rounded-lg shadow-md p-6 sticky top-6" onSubmit={handleSubmit}>
+    <form
+      className="bg-white rounded-lg shadow-md p-4 md:p-6 lg:sticky lg:top-6"
+      onSubmit={handleSubmit}
+    >
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Add New Job</h2>
 
       <div className="mb-4">
-        <label htmlFor="company" className="block text-sm font-semibold text-gray-700 mb-2">
+        <label
+          htmlFor="company"
+          className="block text-sm font-semibold text-gray-700 mb-2"
+        >
           Company Name
         </label>
         <input
@@ -67,7 +73,10 @@ export default function JobForm({ onJobAdded }) {
       </div>
 
       <div className="mb-4">
-        <label htmlFor="title" className="block text-sm font-semibold text-gray-700 mb-2">
+        <label
+          htmlFor="title"
+          className="block text-sm font-semibold text-gray-700 mb-2"
+        >
           Job Title
         </label>
         <input
@@ -81,7 +90,10 @@ export default function JobForm({ onJobAdded }) {
       </div>
 
       <div className="mb-4">
-        <label htmlFor="status" className="block text-sm font-semibold text-gray-700 mb-2">
+        <label
+          htmlFor="status"
+          className="block text-sm font-semibold text-gray-700 mb-2"
+        >
           Status
         </label>
         <select
@@ -100,7 +112,10 @@ export default function JobForm({ onJobAdded }) {
       </div>
 
       <div className="mb-4">
-        <label htmlFor="date" className="block text-sm font-semibold text-gray-700 mb-2">
+        <label
+          htmlFor="date"
+          className="block text-sm font-semibold text-gray-700 mb-2"
+        >
           Application Date
         </label>
         <input
@@ -114,7 +129,10 @@ export default function JobForm({ onJobAdded }) {
       </div>
 
       <div className="mb-4">
-        <label htmlFor="notes" className="block text-sm font-semibold text-gray-700 mb-2">
+        <label
+          htmlFor="notes"
+          className="block text-sm font-semibold text-gray-700 mb-2"
+        >
           Notes
         </label>
         <textarea

@@ -19,14 +19,20 @@ export default function JobCard({ job, onEdit, onDelete }) {
   };
 
   const handleDelete = () => {
-    if (window.confirm(`Are you sure you want to delete the ${job.company_name} application?`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to delete the ${job.company_name} application?`
+      )
+    ) {
       onDelete(job);
     }
   };
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-xl transition-shadow">
-      <h2 className="text-2xl font-bold text-gray-900 mb-1">{job.company_name}</h2>
+      <h2 className="text-2xl font-bold text-gray-900 mb-1">
+        {job.company_name}
+      </h2>
       <h3 className="text-lg text-gray-600 mb-4">{job.job_title}</h3>
       <div className="mb-4">
         <span
@@ -44,11 +50,12 @@ export default function JobCard({ job, onEdit, onDelete }) {
         </div>
         {job.notes && (
           <div>
-            <span className="font-semibold text-gray-700">Notes:</span> {job.notes}
+            <span className="font-semibold text-gray-700">Notes:</span>{" "}
+            {job.notes}
           </div>
         )}
       </div>
-      <div className="mt-4 flex gap-2">
+      <div className="mt-4 flex flex-col sm:flex-row gap-2">
         <button
           onClick={() => onEdit(job)}
           className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium"

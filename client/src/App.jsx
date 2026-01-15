@@ -148,20 +148,26 @@ function App() {
 
   if (!user) {
     return (
-      <LoginForm onLoginSuccess={handleLoginSuccess} onSwitchToSignup={() => setShowSignup(true)} />
+      <LoginForm
+        onLoginSuccess={handleLoginSuccess}
+        onSwitchToSignup={() => setShowSignup(true)}
+      />
     );
   }
 
   return (
     <main className="min-h-screen bg-gray-50">
       <Header user={user} onLogout={handleLogout} />
-      <div className="flex gap-6 p-6">
-        <div className="w-96">
+      <div className="flex flex-col lg:flex-row gap-6 p-4 md:p-6">
+        <div className="w-full lg:w-96">
           <JobForm onJobAdded={handleJobAdded} />
         </div>
 
         <div className="flex-1">
-          <StatusFilter selectedStatus={selectedStatus} onStatusChange={handleStatusChange} />
+          <StatusFilter
+            selectedStatus={selectedStatus}
+            onStatusChange={handleStatusChange}
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {jobs.length === 0 ? (
               <p className="text-gray-500 col-span-full text-center p-8">
@@ -169,7 +175,12 @@ function App() {
               </p>
             ) : (
               jobs.map((job) => (
-                <JobCard key={job.id} job={job} onEdit={handleEdit} onDelete={handleDelete} />
+                <JobCard
+                  key={job.id}
+                  job={job}
+                  onEdit={handleEdit}
+                  onDelete={handleDelete}
+                />
               ))
             )}
           </div>
